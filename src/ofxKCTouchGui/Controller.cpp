@@ -30,6 +30,15 @@ namespace ofxKCTouchGui {
 	}
 	
 	//----------
+	void Controller::update() {
+		for(auto element : this->elements) {
+			element->update();
+		}
+		for(auto touch : this->touches) {
+			touch.second->clearFrameMovement();
+		}
+	}
+	//----------
 	void Controller::draw() {
 		for(auto element : this->elements) {
 			ofPushMatrix();
@@ -50,8 +59,9 @@ namespace ofxKCTouchGui {
 		} else {
 			touch = findTouch->second;
 		}
-		for(auto element : this->elements) {
+		for(auto it = this->elements.rbegin(); it != this->elements.rend(); it++) {
 			if (!touch->isAttached()) {
+				auto element = *it;
 				element->touchDown(touch);
 			}
 		}
@@ -70,7 +80,7 @@ namespace ofxKCTouchGui {
 		
 		for(auto element : this->elements) {
 			if (touch->isAttachedTo(element.get())) {
-				element->touchDragged(touch);
+				element->touchMoved(touch);
 			}
 		}
 	}

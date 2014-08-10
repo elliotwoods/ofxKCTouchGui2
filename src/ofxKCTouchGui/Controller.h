@@ -15,6 +15,7 @@ namespace ofxKCTouchGui {
 		void add(shared_ptr<Element>);
 		void drop(shared_ptr<Element>);
 
+		void update();
 		void draw();
 		
 		void touchDown(ofTouchEventArgs &);

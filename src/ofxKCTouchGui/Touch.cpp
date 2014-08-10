@@ -18,7 +18,7 @@ namespace ofxKCTouchGui {
 		this->index = index;
 		this->moved = false;
 		this->bornTime = ofGetElapsedTimeMillis();
-		this->attachedTo = NULL;		
+		this->attachedTo = NULL;
 	}
 	
 	//---------
@@ -34,8 +34,18 @@ namespace ofxKCTouchGui {
 	//---------
 	void Touch::moveTo(const ofVec2f & position) {
 		this->movement = position - (ofVec2f &) * this;
-		this->moved = true;
+		
+		//first 0.1s of movement aren't counted
+		if (this->getAge() > 0.1f) {
+			this->moved = true;
+		}
+		
 		(ofVec2f &) * this = position;
+	}
+	
+	//---------
+	void Touch::clearFrameMovement() {
+		this->movement = ofVec2f();
 	}
 	
 	//---------
@@ -44,8 +54,32 @@ namespace ofxKCTouchGui {
 	}
 	
 	//---------
+	const ofVec2f & Touch::getPosition() const {
+		return * (ofVec2f *) this;
+	}
+	
+	//---------
 	bool Touch::isAttached() const {
 		return (bool) this->attachedTo;
+	}
+	
+	//---------
+	bool Touch::hasMoved() const {
+		return this->moved;
+	}
+
+	//---------
+	ofVec2f Touch::getMovement() const {
+		if (this->hasMoved()) {
+			return this->movement;
+		} else {
+			return ofVec2f(0.0f, 0.0f);
+		}
+	}
+	
+	//---------
+	ofVec2f Touch::getPreviousPosition() const {
+		return (ofVec2f &) * this - this->getMovement();
 	}
 	
 	//---------
@@ -59,8 +93,23 @@ namespace ofxKCTouchGui {
 	}
 	
 	//---------
+	void Touch::drawDebug() const {
+		ofPushStyle();
+		ofSetLineWidth(1.0f);
+		ofNoFill();
+		ofSetCircleResolution(30.0f);
+		
+		ofCircle((ofVec2f &) * this, this->getAge() * 50.0f);
+		stringstream status;
+		status << * this;
+		ofDrawBitmapString(status.str(), (ofVec2f &) * this + ofVec2f(100.0f, 100.0f));
+		
+		ofPopStyle();
+	}
+	
+	//---------
 	ostream & operator<<(ostream & os, const Touch & touch) {
-		os << "[" << touch.getIndex() << "] (" << touch.x << ", " << touch.y << ")\t" << touch.getAge() << "s\t" << (touch.isAttached() ? "[x]" : "[ ]");
+		os << "[" << touch.getIndex() << "] (" << touch.x << ", " << touch.y << ")\t" << touch.getAge() << "s\t[" << (touch.isAttached() ? "a" : " ") << (touch.hasMoved() ? "m" : " ") << "]";
 		return os;
 	}
 }

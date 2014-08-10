@@ -1,23 +1,48 @@
 #include "Element.h"
 
+#define CHECK_ENABLED if (!this->enabled)return;
 namespace ofxKCTouchGui {
 	//---------
 	Element::Element() {
-		
+		this->enabled = true;
+	}
+	
+	//---------
+	void Element::update() {
+		ofNotifyEvent(this->onUpdate, this);
+	}
+	
+	//---------
+	void Element::draw() {
+		CHECK_ENABLED
+		ofNotifyEvent(this->onDraw, this);
+	}
+	
+	//---------
+	void Element::setEnabled(bool enabled) {
+		this->enabled = enabled;
+	}
+	
+	//---------
+	bool Element::getEnabled() const {
+		return this->enabled;
 	}
 	
 	//---------
 	void Element::touchDown(shared_ptr<Touch> touch) {
+		CHECK_ENABLED
 		if (this->bounds.inside(* touch)) {
 			touch->attach(this);
 			this->attachedTouches.insert(touch);
+			ofNotifyEvent(this->onTouchDown, * touch, this);
 		}
 	}
 	
 	//---------
 	void Element::touchUp(shared_ptr<Touch> touch) {
+		CHECK_ENABLED
 		if (touch->isAttachedTo(this)) {
-			if (this->bounds.inside(* touch)) {
+			if (this->bounds.inside(* touch) && ! touch->hasMoved()) {
 				ofNotifyEvent(this->onHit, * touch, this);
 			}
 			touch->detach();
@@ -26,9 +51,10 @@ namespace ofxKCTouchGui {
 	}
 	
 	//---------
-	void Element::touchDragged(shared_ptr<Touch> touch) {
+	void Element::touchMoved(shared_ptr<Touch> touch) {
+		CHECK_ENABLED
 		if (touch->isAttachedTo(this)) {
-			ofNotifyEvent(this->onDrag, * touch, this);
+			ofNotifyEvent(this->onTouchMove, * touch, this);
 		}
 	}
 	

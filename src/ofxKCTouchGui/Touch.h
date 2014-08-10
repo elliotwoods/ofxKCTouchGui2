@@ -13,17 +13,25 @@ namespace ofxKCTouchGui {
 	public:
 		Touch(const ofTouchEventArgs &);
 		Touch(int index, const ofVec2f & position);
-		
+				
 		void attach(Element *);
 		void detach();
 		void moveTo(const ofVec2f & position);
-		
+		void clearFrameMovement();
+
 		int getIndex() const;
+		const ofVec2f & getPosition() const;
 		
 		bool isAttached() const;
 		bool isAttachedTo(Element *) const;
 		
+		bool hasMoved() const;
+		ofVec2f getMovement() const;
+		ofVec2f getPreviousPosition() const;
+		
 		float getAge() const;
+		
+		void drawDebug() const;
 	protected:
 		int index;
 		bool moved;
