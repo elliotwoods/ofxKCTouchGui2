@@ -34,9 +34,10 @@ namespace ofxKCTouchGui {
 			this->zoom = ofClamp(this->zoom, this->zoom.getMin(), this->zoom.getMax());
 			
 			//rubber band the view position
+			auto globalZoom = Controller::X().getZoom();
 			ofVec2f viewPositionClamped;
-			viewPositionClamped.x = ofClamp(this->viewPosition.x, -1.0, 1.0f);
-			viewPositionClamped.y = ofClamp(this->viewPosition.y, -1.0, 1.0f);
+			viewPositionClamped.x = ofClamp(this->viewPosition.x * globalZoom, -1.0, 1.0f) / globalZoom;
+			viewPositionClamped.y = ofClamp(this->viewPosition.y * globalZoom, -1.0, 1.0f) / globalZoom;
 			viewPosition = viewPosition * 0.8f + viewPositionClamped * 0.2f;
 			
 			this->transform.makeIdentityMatrix();

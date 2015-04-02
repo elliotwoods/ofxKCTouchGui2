@@ -33,10 +33,13 @@ namespace ofxKCTouchGui {
 		
 		float getWidth() const;
 		float getHeight() const;
+		
+		void setBrokenRotation(bool);
 	protected:
 		vector<shared_ptr<Element> > elements;
 		map<int, shared_ptr<Touch> > touches;
 		float zoom;
+		bool brokenRotation;
 		static Controller * singleton;
 	};
 }

@@ -11,6 +11,7 @@ namespace ofxKCTouchGui {
 			ofAddListener(this->onDraw, this, &MultiSelect::draw);
 			ofAddListener(this->onTouchDown, this, &MultiSelect::touch);
 			ofAddListener(this->onTouchMove, this, &MultiSelect::touch);
+			ofAddListener(this->onBoundsChange, this, &MultiSelect::boundsChange);
 			this->selection = -1;
 			this->itemWidth = 10.0f;
 		}
@@ -24,6 +25,11 @@ namespace ofxKCTouchGui {
 		//----------
 		void MultiSelect::clearOptions() {
 			this->options.clear();
+			this->update();
+		}
+
+		//----------
+		void MultiSelect::boundsChange(ofRectangle &) {
 			this->update();
 		}
 		
@@ -43,7 +49,11 @@ namespace ofxKCTouchGui {
 		
 		//----------
 		void MultiSelect::setSelection(string caption) {
-			
+			for(int i=0; i<this->options.size(); i++) {
+				if(this->options[i] == caption) {
+					this->setSelection(i);
+				}
+			}
 		}
 		
 		//----------
@@ -85,9 +95,9 @@ namespace ofxKCTouchGui {
 			ofSetColor(255);
 			
 			for (int i=0; i<this->options.size(); i++) {
-				auto & font = ofxAssets::font("ofxKCTouchGui2::swisop3", 60.0f);
+				auto & font = ofxAssets::font("ofxKCTouchGui2::swisop3", 48.0f);
 				auto bounds = font.getStringBoundingBox(this->options[i], 0, 0);
-				font.drawString(this->options[i], ((float) i + 0.5f) * this->itemWidth + INNER_MARGIN - bounds.getWidth() / 2.0f, (this->getBounds().getHeight() + bounds.getHeight()) / 2.0f);
+				font.drawString(this->options[i], ((float) i + 0.5f) * this->itemWidth + INNER_MARGIN - bounds.getWidth() / 2.0f, (this->getBounds().getHeight() + font.getLineHeight() - INNER_MARGIN) / 2.0f);
 			}
 			
 			ofPopStyle();
@@ -95,7 +105,7 @@ namespace ofxKCTouchGui {
 		
 		//----------
 		void MultiSelect::touch(Touch & touch) {
-			auto localTouchX = touch.x - this->getLocalBounds().x;
+			auto localTouchX = touch.x - this->getBounds().x;
 			auto newSelection = (localTouchX - INNER_MARGIN) / this->itemWidth;
 			newSelection = ofClamp(newSelection, 0, this->options.size() - 1);
 			

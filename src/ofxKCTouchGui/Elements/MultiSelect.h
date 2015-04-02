@@ -10,6 +10,8 @@ namespace ofxKCTouchGui {
 			void addOption(string);
 			void clearOptions();
 			
+			void boundsChange(ofRectangle &);
+			
 			int getSelectionIndex() const;
 			string getSelectionCaption() const;
 			void setSelection(string);

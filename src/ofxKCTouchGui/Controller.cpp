@@ -14,6 +14,7 @@ namespace ofxKCTouchGui {
 	//----------
 	Controller::Controller() {
 		this->zoom = 1.0f;
+		this->brokenRotation = false;
 		Controller::singleton = this;
 	}
 	
@@ -142,7 +143,16 @@ namespace ofxKCTouchGui {
 	
 	//----------
 	float Controller::getWidth() const {
-		if(ofGetWidth() > ofGetHeight()) { // fix for switched dimensions on older iPads
+		if (this->brokenRotation) {
+			return ofGetHeight() / zoom;
+		} else {
+			return ofGetWidth() / zoom;
+		}
+	}
+	
+	//----------
+	float Controller::getHeight() const {
+		if (this->brokenRotation) {
 			return ofGetWidth() / zoom;
 		} else {
 			return ofGetHeight() / zoom;
@@ -150,11 +160,7 @@ namespace ofxKCTouchGui {
 	}
 	
 	//----------
-	float Controller::getHeight() const {
-		if(ofGetWidth() > ofGetHeight()) { // fix for switched dimensions on older iPads
-			return ofGetHeight() / zoom;
-		} else {
-			return ofGetWidth() / zoom;
-		}
+	void Controller::setBrokenRotation(bool brokenRotation) {
+		this->brokenRotation = brokenRotation;
 	}
 }
