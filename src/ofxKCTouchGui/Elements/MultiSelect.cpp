@@ -85,7 +85,7 @@ namespace ofxKCTouchGui {
 			ofSetColor(255);
 			
 			for (int i=0; i<this->options.size(); i++) {
-				auto & font = ofxAssets::font("swisop3", 60.0f);
+				auto & font = ofxAssets::font("ofxKCTouchGui2::swisop3", 60.0f);
 				auto bounds = font.getStringBoundingBox(this->options[i], 0, 0);
 				font.drawString(this->options[i], ((float) i + 0.5f) * this->itemWidth + INNER_MARGIN - bounds.getWidth() / 2.0f, (this->getBounds().getHeight() + bounds.getHeight()) / 2.0f);
 			}
