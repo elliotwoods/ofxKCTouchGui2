@@ -1,4 +1,5 @@
 #include "Canvas.h"
+#include "Controller.h"
 
 namespace ofxKCTouchGui {
 	namespace Elements {
@@ -40,7 +41,8 @@ namespace ofxKCTouchGui {
 			
 			this->transform.makeIdentityMatrix();
 			this->transform.translate(-this->viewPosition);
-			this->transform.scale(this->workspaceAspectRatio, 1.0f, 1.0f);
+			auto ourBounds = this->getLocalBounds();
+			this->transform.scale(this->workspaceAspectRatio / (ourBounds.getWidth() / ourBounds.getHeight()), 1.0f, 1.0f);
 			this->transform.scale(this->zoom, this->zoom, 1.0f);
 			this->transform.translate(1.0f, 1.0f, 0.0f);
 			this->transform.scale(this->getBounds().getWidth() / 2.0f, this->getBounds().getHeight() / 2.0f, 1.0f);
@@ -48,8 +50,17 @@ namespace ofxKCTouchGui {
 		
 		//----------
 		void Canvas::draw() {
+			auto bounds = this->getBounds();
+			auto zoom = Controller::X().getZoom();
+			
+			auto globalBounds = bounds;
+			globalBounds.x *= zoom;
+			globalBounds.y *= zoom;
+			globalBounds.width *= zoom;
+			globalBounds.height *= zoom;
+			
 			ofPushView();
-			ofViewport(this->getBounds());
+			ofViewport(globalBounds);
 			ofSetupScreen();
 			ofMultMatrix(this->transform);
 			

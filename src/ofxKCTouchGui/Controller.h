@@ -10,6 +10,7 @@
 namespace ofxKCTouchGui {
 	class Controller {
 	public:
+		static Controller & X();
 		Controller();
 		void init();
 		void add(shared_ptr<Element>);
@@ -26,8 +27,16 @@ namespace ofxKCTouchGui {
 		
 		const vector<shared_ptr<Element> > & getElements() const;
 		const map<int, shared_ptr<Touch> > & getTouches() const;
+		
+		void setZoom(float zoom = 1.0f);
+		float getZoom() const;
+		
+		float getWidth() const;
+		float getHeight() const;
 	protected:
 		vector<shared_ptr<Element> > elements;
 		map<int, shared_ptr<Touch> > touches;
+		float zoom;
+		static Controller * singleton;
 	};
 }

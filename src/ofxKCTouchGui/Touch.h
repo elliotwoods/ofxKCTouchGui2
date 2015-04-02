@@ -11,7 +11,7 @@ namespace ofxKCTouchGui {
 	
 	class Touch : public ofVec2f {
 	public:
-		Touch(const ofTouchEventArgs &);
+		Touch(const ofTouchEventArgs &, float zoom);
 		Touch(int index, const ofVec2f & position);
 				
 		void attach(Element *);

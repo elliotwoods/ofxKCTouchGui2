@@ -1,13 +1,25 @@
 #include "Controller.h"
+#include "ofxAssets.h"
+#include "ofAppRunner.h"
 
 namespace ofxKCTouchGui {
 	//----------
+	Controller * Controller::singleton = 0;
+	
+	//----------
+	Controller & Controller::X() {
+		return * Controller::singleton;
+	}
+	
+	//----------
 	Controller::Controller() {
-		
+		this->zoom = 1.0f;
+		Controller::singleton = this;
 	}
 	
 	//----------
 	void Controller::init() {
+		ofxAssets::AssetRegister.addAddon("ofxKCTouchGui2");
 		ofRegisterTouchEvents(this);
 	}
 	
@@ -40,12 +52,18 @@ namespace ofxKCTouchGui {
 	}
 	//----------
 	void Controller::draw() {
+		ofPushMatrix();
+		ofScale(this->zoom, this->zoom);
 		for(auto element : this->elements) {
 			ofPushMatrix();
 			ofTranslate(element->getBounds().getTopLeft());
 			element->draw();
 			ofPopMatrix();
 		}
+		for(auto touch : this->touches) {
+			touch.second->drawDebug();
+		}
+		ofPopMatrix();
 	}
 	//----------
 	void Controller::touchDown(ofTouchEventArgs & rawTouch) {
@@ -54,7 +72,7 @@ namespace ofxKCTouchGui {
 		//check if we've already got this touch in the register (we basically never should at this point)
 		auto findTouch = this->touches.find(rawTouch.id);
 		if (findTouch == this->touches.end()) {
-			touch = shared_ptr<Touch>(new Touch(rawTouch));
+			touch = shared_ptr<Touch>(new Touch(rawTouch, zoom));
 			this->touches.insert(pair<int, shared_ptr<Touch> >(rawTouch.id, touch));
 		} else {
 			touch = findTouch->second;
@@ -76,7 +94,7 @@ namespace ofxKCTouchGui {
 		}
 		
 		auto & touch = findTouch->second;
-		touch->moveTo((ofVec2f &) rawTouch);
+		touch->moveTo((ofVec2f &) rawTouch / zoom);
 		
 		for(auto element : this->elements) {
 			if (touch->isAttachedTo(element.get())) {
@@ -110,5 +128,33 @@ namespace ofxKCTouchGui {
 	//----------
 	const map<int, shared_ptr<Touch> > & Controller::getTouches() const {
 		return this->touches;
+	}
+	
+	//----------
+	void Controller::setZoom(float zoom) {
+		this->zoom = zoom;
+	}
+	
+	//----------
+	float Controller::getZoom() const {
+		return this->zoom;
+	}
+	
+	//----------
+	float Controller::getWidth() const {
+		if(ofGetWidth() > ofGetHeight()) { // fix for switched dimensions on older iPads
+			return ofGetWidth() / zoom;
+		} else {
+			return ofGetHeight() / zoom;
+		}
+	}
+	
+	//----------
+	float Controller::getHeight() const {
+		if(ofGetWidth() > ofGetHeight()) { // fix for switched dimensions on older iPads
+			return ofGetHeight() / zoom;
+		} else {
+			return ofGetWidth() / zoom;
+		}
 	}
 }

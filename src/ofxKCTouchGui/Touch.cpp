@@ -4,8 +4,8 @@
 
 namespace ofxKCTouchGui {
 	//---------
-	Touch::Touch(const ofTouchEventArgs & rawTouch) {
-		(ofVec2f &) *this = (ofVec2f &) rawTouch;
+	Touch::Touch(const ofTouchEventArgs & rawTouch, float zoom) {
+		(ofVec2f &) *this = (ofVec2f &) rawTouch / zoom;
 		this->index = rawTouch.id;
 		this->moved = false;
 		this->bornTime = ofGetElapsedTimeMillis();
