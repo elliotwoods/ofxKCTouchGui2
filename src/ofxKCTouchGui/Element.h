@@ -32,6 +32,7 @@ namespace ofxKCTouchGui {
 		ofEvent<void> onUpdate;
 		ofEvent<void> onDraw;
 		ofEvent<Touch> onHit;
+		ofEvent<void> onHitSimple;
 		ofEvent<Touch> onTouchDown;
 		ofEvent<Touch> onTouchMove;
 		ofEvent<ofRectangle> onBoundsChange;

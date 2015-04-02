@@ -44,6 +44,7 @@ namespace ofxKCTouchGui {
 		if (touch->isAttachedTo(this)) {
 			if (this->bounds.inside(* touch) && ! touch->hasMoved()) {
 				ofNotifyEvent(this->onHit, * touch, this);
+				ofNotifyEvent(this->onHitSimple, this);
 			}
 			touch->detach();
 			this->attachedTouches.erase(touch);

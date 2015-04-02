@@ -42,6 +42,20 @@ namespace ofxKCTouchGui {
 		}
 		
 		//----------
+		void MultiSelect::setSelection(string caption) {
+			
+		}
+		
+		//----------
+		void MultiSelect::setSelection(int index) {
+			if(!this->options.empty()) {
+				this->selection = ofClamp(index, 0, this->options.size() -1);
+				ofNotifyEvent(this->onSelectIndex, this->selection, this);
+				ofNotifyEvent(this->onSelectCaption, this->options[this->selection], this);
+			}
+		}
+		
+		//----------
 		void MultiSelect::update() {
 			if (this->options.empty()) {
 				this->selection = -1;
@@ -83,7 +97,11 @@ namespace ofxKCTouchGui {
 		void MultiSelect::touch(Touch & touch) {
 			auto localTouchX = touch.x - this->getLocalBounds().x;
 			auto newSelection = (localTouchX - INNER_MARGIN) / this->itemWidth;
-			this->selection = ofClamp(newSelection, 0, this->options.size() - 1);
+			newSelection = ofClamp(newSelection, 0, this->options.size() - 1);
+			
+			if(newSelection != this->selection) {
+				this->setSelection(newSelection);
+			}
 		}
 	}
 }

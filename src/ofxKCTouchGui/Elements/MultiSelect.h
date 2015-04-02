@@ -15,6 +15,8 @@ namespace ofxKCTouchGui {
 			void setSelection(string);
 			void setSelection(int);
 			
+			ofEvent<int> onSelectIndex;
+			ofEvent<string> onSelectCaption;
 		protected:
 			void update();
 			void draw();
