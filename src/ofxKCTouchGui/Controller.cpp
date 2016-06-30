@@ -20,7 +20,7 @@ namespace ofxKCTouchGui {
 	
 	//----------
 	void Controller::init() {
-		ofxAssets::AssetRegister.addAddon("ofxKCTouchGui2");
+		ofxAssets::AssetRegister().addAddon("ofxKCTouchGui2");
 		ofRegisterTouchEvents(this);
 	}
 	
